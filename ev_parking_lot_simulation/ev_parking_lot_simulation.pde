@@ -66,6 +66,9 @@ void showCarDetail() {
   if (cars[currentCarID].btnPauseCharge.isPressed()) {
     cars[currentCarID].pauseCharge();
   }
+  if (cars[currentCarID].btnReverseCharge.isPressed()) {
+    cars[currentCarID].reverseCharge();
+  }
   if (cars[currentCarID].btnExitCharge.isPressed()) {
     cars[currentCarID].exitCharge();
   }

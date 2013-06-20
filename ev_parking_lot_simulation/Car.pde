@@ -9,7 +9,7 @@ class Car {
   float carChargeTime, carChargePrice, carBatteryTotal, carBatteryRemain;
   float chargeSpeed1, chargeSpeed2, chargeSpeed3;
   boolean pressed;
-  Button btnStartCharge, btnPauseCharge, btnExitCharge;
+  Button btnStartCharge, btnPauseCharge, btnReverseCharge, btnExitCharge;
   PImage carImg;
   int chargeMode;
   
@@ -20,9 +20,10 @@ class Car {
     carBatteryRemain = tempCarBatteryRemain;
     pressed = false;
     
-    btnStartCharge = new Button(835, 70, "开始充电");
-    btnPauseCharge = new Button(915, 70, "暂停充电");
-    btnExitCharge = new Button(995, 70, "取消充电");
+    btnStartCharge = new Button(860, 70, "开始充电");
+    btnPauseCharge = new Button(970, 70, "暂停充电");
+    btnReverseCharge = new Button(860, 120, "反向充电");
+    btnExitCharge = new Button(970, 120, "取消充电");
     
     chargeSpeed1 = 0.80;
     chargeSpeed2 = 0.65;
@@ -62,6 +63,11 @@ class Car {
         carImg = loadImage("bus1.png");
         break;
       case 6:
+        carBatteryTotal = 9000;
+        carColor = color(255, 63, 63);
+        carImg = loadImage("bus2.png");
+        break;
+      default:
         carBatteryTotal = 9000;
         carColor = color(255, 63, 63);
         carImg = loadImage("bus2.png");
@@ -131,11 +137,11 @@ class Car {
     String strBatteryRemain = "剩余电量：" + carBatteryRemain; 
     String strBatteryTotal = "总共电量：" + carBatteryTotal;
     fill(50);
-    text(strCarID, 840, 280);
-    text(strCarType, 840, 300);
-    text(strChargeMode, 840,320);
-    text(strBatteryRemain, 840, 340);
-    text(strBatteryTotal, 840, 360);
+    text(strCarID, 840, 330);
+    text(strCarType, 840, 350);
+    text(strChargeMode, 840,370);
+    text(strBatteryRemain, 840, 390);
+    text(strBatteryTotal, 840, 410);
   }
   
   void showDetail() {
@@ -145,10 +151,11 @@ class Car {
     // btn Sart Pause Exit Charge
     btnStartCharge.display();
     btnPauseCharge.display();
+    btnReverseCharge.display();
     btnExitCharge.display();
 
     // car Image
-    image(carImg, 840, 130);
+    image(carImg, 840, 180);
     // car detail Info
     showInfo();
   }
@@ -178,6 +185,8 @@ class Car {
           carBatteryRemain += chargeSpeed2;  // middle charge speed
         } else if (carBatteryRemain < carBatteryTotal) {
           carBatteryRemain += chargeSpeed3;
+        } else {
+          exitCharge();
         }
         break;
       case 2:  // pause
@@ -196,7 +205,5 @@ class Car {
       default:
         break;
     }
-    
-    
   }
 }
