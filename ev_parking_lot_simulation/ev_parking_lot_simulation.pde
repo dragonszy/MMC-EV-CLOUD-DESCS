@@ -13,7 +13,9 @@ void displayMenu() {
   rect(20, 20, 800, 55);
   btnView.display();
   btnSimulate.display();
-  btnAddCar.display();
+  btnAllStartCharge.display();
+  btnAllReverseCharge.display();
+  btnAllPauseCharge.display();
   btnExit.display();
 
 }
@@ -74,12 +76,31 @@ void showCarDetail() {
   }
 }
 
+// show total detail - All Cars Stats
+void showAllDetail() {
+  float totalChargeSpeed, totalReverseSpeed;
+  totalChargeSpeed = 0;
+  totalReverseSpeed = 0;
+  for(int i = 0; i < N; i++) {
+    totalChargeSpeed += cars[i].chargeSpeed;
+    totalReverseSpeed += cars[i].reverseSpeed;
+  }
+
+  String strTotalChargeSpeed = "电网->停车场：" + totalChargeSpeed;
+  String strTotalReverseSpeed = "停车场->电网：" + totalReverseSpeed;
+
+  text(strTotalChargeSpeed, 840, 430);
+  text(strTotalReverseSpeed, 840, 450);
+
+}
+
 
 // ================ Main Program ================
 int N = 40;
 int currentCarID;
 int viewMode;
-Button btnView, btnSimulate, btnAddCar, btnExit;
+Button btnView, btnSimulate, btnExit, btnAllStartCharge, btnAllPauseCharge, btnAllReverseCharge;
+// btnAddCar, btnRemoveCar,
 Car [] cars = new Car[N];
 Gif mmcAnimation;
 
@@ -88,9 +109,14 @@ void setup() {
   background(255);
   PFont font = loadFont("SimHei-48.vlw");
   btnView = new Button(50, 30, "停车场"); 
-  btnAddCar = new Button(150, 30, "添加车辆");
-  btnSimulate = new Button(250, 30, "开始模拟");
-  btnExit = new Button(350, 30, "退出程序");
+  btnSimulate = new Button(150, 30, "开始模拟");
+  // TODO add or remove a car
+  // btnAddCar = new Button(250, 30, "添加车辆");
+  // btnRemoveCar = new Button(350, 30, "删除车辆");
+  btnAllStartCharge = new Button(250, 30, "全部充电");
+  btnAllPauseCharge = new Button(350, 30, "全部暂停");
+  btnAllReverseCharge = new Button(450, 30, "全部放电");
+  btnExit = new Button(550, 30, "退出程序");
 
   mmcAnimation = new Gif(this, "MMC-animation.gif");
   mmcAnimation.loop();
@@ -130,12 +156,27 @@ void draw() {
     displayCars();
     clearDetail();
     showCarDetail();
+    showAllDetail();
   }
 
-  
-  if (btnAddCar.isPressed()) {
-    // TODO
+  if (btnAllStartCharge.isPressed()) {
+    for(int i = 0; i < N; i++) {
+      cars[i].startCharge();
+    }
   }
+
+  if (btnAllPauseCharge.isPressed()) {
+    for(int i = 0; i < N; i++) {
+      cars[i].pauseCharge();
+    }
+  }
+
+  if (btnAllReverseCharge.isPressed()) {
+    for(int i = 0; i < N; i++) {
+      cars[i].reverseCharge();
+    }
+  }
+
 
   // simulate mmc, gif from wiki
   if (btnSimulate.isPressed()) {
@@ -145,10 +186,10 @@ void draw() {
     image(mmcAnimation, 50, 100);
   }
   
+
+
   // exit button
   if (btnExit.isPressed()) {
     exit();
   }
-  
-  
 }

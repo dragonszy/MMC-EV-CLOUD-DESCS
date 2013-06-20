@@ -7,7 +7,8 @@ class Car {
   color textColor;
   String carInfo;
   float carChargeTime, carChargePrice, carBatteryTotal, carBatteryRemain;
-  float chargeSpeed1, chargeSpeed2, chargeSpeed3;
+  float chargeSpeed1, chargeSpeed2, chargeSpeed3, chargeSpeed;
+  float reverseSpeed1, reverseSpeed2, reverseSpeed3, reverseSpeed;
   boolean pressed;
   Button btnStartCharge, btnPauseCharge, btnReverseCharge, btnExitCharge;
   PImage carImg;
@@ -25,9 +26,12 @@ class Car {
     btnReverseCharge = new Button(860, 120, "反向充电");
     btnExitCharge = new Button(970, 120, "取消充电");
     
-    chargeSpeed1 = 0.80;
-    chargeSpeed2 = 0.65;
-    chargeSpeed3 = 0.50;
+    chargeSpeed1 = 1.30;
+    chargeSpeed2 = 1.00;
+    chargeSpeed3 = 0.60;
+    reverseSpeed1 = 1.40;
+    reverseSpeed2 = 1.20;
+    reverseSpeed3 = 1.00;
     
     chargeMode = 0;
     
@@ -180,25 +184,31 @@ class Car {
     switch(chargeMode) {
       case 1:  // start
         if (carBatteryRemain < carBatteryTotal/3) {
-          carBatteryRemain += chargeSpeed1;  // fast charge speed
+          chargeSpeed = chargeSpeed1;  // fast charge speed
         } else if (carBatteryRemain < 2*carBatteryTotal/3) {
-          carBatteryRemain += chargeSpeed2;  // middle charge speed
+          chargeSpeed = chargeSpeed2;  // middle charge speed
         } else if (carBatteryRemain < carBatteryTotal) {
-          carBatteryRemain += chargeSpeed3;
+          chargeSpeed = chargeSpeed3;
         } else {
           exitCharge();
         }
+        reverseSpeed = 0;
+        carBatteryRemain += chargeSpeed;
         break;
       case 2:  // pause
         break;
       case 3:  // reverse
         if (carBatteryRemain > 2*carBatteryTotal/3) {
-          carBatteryRemain -= chargeSpeed1;
+          reverseSpeed = reverseSpeed1;
         } else if (carBatteryRemain > carBatteryTotal/3) {
-          carBatteryRemain -= chargeSpeed2;
-        } else if (carBatteryRemain > 0) {
-          carBatteryRemain -= chargeSpeed3;
+          reverseSpeed = reverseSpeed2;
+        } else if (carBatteryRemain > 10) {
+          reverseSpeed = reverseSpeed3;
+        } else {
+          exitCharge();
         }
+        chargeSpeed = 0;
+        carBatteryRemain -= reverseSpeed;
         break;
       case 0: // exit
         break;
