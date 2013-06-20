@@ -170,24 +170,31 @@ class Car {
   }
   
   void updateBattery() {
-    if (chargeMode == 1) {
-      if (carBatteryRemain < carBatteryTotal/3) {
-        carBatteryRemain += chargeSpeed1;  // fast charge speed
-      } else if (carBatteryRemain < 2*carBatteryTotal/3) {
-        carBatteryRemain += chargeSpeed2;  // middle charge speed
-      } else if (carBatteryRemain < carBatteryTotal) {
-        carBatteryRemain += chargeSpeed3;
-      }
-    } else if (chargeMode == 2) {
-      
-    } else if (chargeMode == 3) {
-      if (carBatteryRemain > 2*carBatteryTotal/3) {
-        carBatteryRemain -= chargeSpeed1;
-      } else if (carBatteryRemain > carBatteryTotal/3) {
-        carBatteryRemain -= chargeSpeed2;
-      } else if (carBatteryRemain > 0) {
-        carBatteryRemain -= chargeSpeed3;
-      }
+    switch(chargeMode) {
+      case 1:  // start
+        if (carBatteryRemain < carBatteryTotal/3) {
+          carBatteryRemain += chargeSpeed1;  // fast charge speed
+        } else if (carBatteryRemain < 2*carBatteryTotal/3) {
+          carBatteryRemain += chargeSpeed2;  // middle charge speed
+        } else if (carBatteryRemain < carBatteryTotal) {
+          carBatteryRemain += chargeSpeed3;
+        }
+        break;
+      case 2:  // pause
+        break;
+      case 3:  // reverse
+        if (carBatteryRemain > 2*carBatteryTotal/3) {
+          carBatteryRemain -= chargeSpeed1;
+        } else if (carBatteryRemain > carBatteryTotal/3) {
+          carBatteryRemain -= chargeSpeed2;
+        } else if (carBatteryRemain > 0) {
+          carBatteryRemain -= chargeSpeed3;
+        }
+        break;
+      case 0: // exit
+        break;
+      default:
+        break;
     }
     
     
