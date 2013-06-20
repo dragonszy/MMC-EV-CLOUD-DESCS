@@ -24,9 +24,9 @@ class Car {
     btnPauseCharge = new Button(915, 70, "暂停充电");
     btnExitCharge = new Button(995, 70, "取消充电");
     
-    chargeSpeed1 = 0.06;
-    chargeSpeed2 = 0.04;
-    chargeSpeed3 = 0.02;
+    chargeSpeed1 = 0.80;
+    chargeSpeed2 = 0.65;
+    chargeSpeed3 = 0.50;
     
     chargeMode = 0;
     
@@ -77,8 +77,6 @@ class Car {
     int row = h/10;
     int col = w/10;
     int total = row * col;
-    
-    updateBattery();
     int remain = int(carBatteryRemain*total/carBatteryTotal);
     
     noFill();
@@ -113,7 +111,6 @@ class Car {
   }
   
   void showInfo() {
-    updateBattery();
     String strCarID = "您是第" + currentCarID + "号车";
     String strCarType = "您的车型是Type" + carType;
     String strChargeMode="";
@@ -127,7 +124,7 @@ class Car {
       case 3:
         strChargeMode = "您的汽车状态：反向充电";
         break;
-      case 4:
+      case 0:
         strChargeMode = "您的汽车状态：退出充电";
         break;
     }

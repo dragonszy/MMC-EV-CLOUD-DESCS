@@ -48,19 +48,25 @@ void showCarDetail() {
       currentCarID = i;
       break;
     }
-    clearDetail(); 
-    cars[currentCarID].showDetail();
   }
+  // select box of car percent 
+  noFill();
+  strokeWeight(2);
+  stroke(255,0,0);
+  rect(cars[currentCarID].xpos,cars[currentCarID].ypos,cars[currentCarID].w,cars[currentCarID].h);
+  // reset stroke
+  strokeWeight(1);
+  stroke(127);
+    
+  cars[currentCarID].showDetail();
+    
   if (cars[currentCarID].btnStartCharge.isPressed()) {
-    text("start",840,350);
     cars[currentCarID].startCharge();
   }
   if (cars[currentCarID].btnPauseCharge.isPressed()) {
-    text("pause",840,360);
     cars[currentCarID].pauseCharge();
   }
   if (cars[currentCarID].btnExitCharge.isPressed()) {
-    text("exit",840,370);
     cars[currentCarID].exitCharge();
   }
 }
@@ -105,19 +111,23 @@ void draw() {
   displayMenu();
   displayMain();
   displayDetail();
+
+  // update battery
+  for (int i=0; i < N; i++) {
+    cars[i].updateBattery();
+  }
   
   // view all cars and show car detail
   if (btnView.isPressed()) {
-    
     viewMode = 1;
   }
 
   if (viewMode == 1) {
     clearMain();
     displayCars();
+    clearDetail();
+    showCarDetail();
   }
-  
-  showCarDetail();
 
   
   if (btnAddCar.isPressed()) {
