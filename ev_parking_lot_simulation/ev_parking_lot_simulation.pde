@@ -78,19 +78,28 @@ void showCarDetail() {
 
 // show total detail - All Cars Stats
 void showAllDetail() {
-  float totalChargeSpeed, totalReverseSpeed;
+  
   totalChargeSpeed = 0;
   totalReverseSpeed = 0;
+  totalBatteryRemain = 0;
+  totalBatteryCharge = 0;
   for(int i = 0; i < N; i++) {
     totalChargeSpeed += cars[i].chargeSpeed;
     totalReverseSpeed += cars[i].reverseSpeed;
+    totalBatteryRemain += cars[i].carBatteryRemain;
+    totalBatteryCharge += (cars[i].carBatteryTotal-cars[i].carBatteryRemain);
   }
 
-  String strTotalChargeSpeed = "电网->停车场：" + totalChargeSpeed;
-  String strTotalReverseSpeed = "停车场->电网：" + totalReverseSpeed;
+  strTotalChargeSpeed = "电网->停车场：" + totalChargeSpeed;
+  strTotalReverseSpeed = "停车场->电网：" + totalReverseSpeed;
+  strTotalBatteryRemain = "剩余总电量：" + totalBatteryRemain;
+  strTotalBatteryCharge = "需冲总电量：" + totalBatteryCharge;
 
-  text(strTotalChargeSpeed, 840, 430);
-  text(strTotalReverseSpeed, 840, 450);
+  text("停车场总体情况：", 840,500);
+  text(strTotalChargeSpeed, 840, 520);
+  text(strTotalReverseSpeed, 840, 540);
+  text(strTotalBatteryRemain, 840, 560);
+  text(strTotalBatteryCharge, 840, 580);
 
 }
 
@@ -103,6 +112,8 @@ Button btnView, btnSimulate, btnExit, btnAllStartCharge, btnAllPauseCharge, btnA
 // btnAddCar, btnRemoveCar,
 Car [] cars = new Car[N];
 Gif mmcAnimation;
+float totalChargeSpeed, totalReverseSpeed, totalBatteryRemain, totalBatteryCharge;
+String strTotalChargeSpeed, strTotalReverseSpeed, strTotalBatteryRemain, strTotalBatteryCharge;
 
 void setup() {
   size(1100, 680);

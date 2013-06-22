@@ -96,19 +96,28 @@ public void showCarDetail() {
 
 // show total detail - All Cars Stats
 public void showAllDetail() {
-  float totalChargeSpeed, totalReverseSpeed;
+  
   totalChargeSpeed = 0;
   totalReverseSpeed = 0;
+  totalBatteryRemain = 0;
+  totalBatteryCharge = 0;
   for(int i = 0; i < N; i++) {
     totalChargeSpeed += cars[i].chargeSpeed;
     totalReverseSpeed += cars[i].reverseSpeed;
+    totalBatteryRemain += cars[i].carBatteryRemain;
+    totalBatteryCharge += (cars[i].carBatteryTotal-cars[i].carBatteryRemain);
   }
 
-  String strTotalChargeSpeed = "\u7535\u7f51->\u505c\u8f66\u573a\uff1a" + totalChargeSpeed;
-  String strTotalReverseSpeed = "\u505c\u8f66\u573a->\u7535\u7f51\uff1a" + totalReverseSpeed;
+  strTotalChargeSpeed = "\u7535\u7f51->\u505c\u8f66\u573a\uff1a" + totalChargeSpeed;
+  strTotalReverseSpeed = "\u505c\u8f66\u573a->\u7535\u7f51\uff1a" + totalReverseSpeed;
+  strTotalBatteryRemain = "\u5269\u4f59\u603b\u7535\u91cf\uff1a" + totalBatteryRemain;
+  strTotalBatteryCharge = "\u9700\u51b2\u603b\u7535\u91cf\uff1a" + totalBatteryCharge;
 
-  text(strTotalChargeSpeed, 840, 430);
-  text(strTotalReverseSpeed, 840, 450);
+  text("\u505c\u8f66\u573a\u603b\u4f53\u60c5\u51b5\uff1a", 840,500);
+  text(strTotalChargeSpeed, 840, 520);
+  text(strTotalReverseSpeed, 840, 540);
+  text(strTotalBatteryRemain, 840, 560);
+  text(strTotalBatteryCharge, 840, 580);
 
 }
 
@@ -121,6 +130,8 @@ Button btnView, btnSimulate, btnExit, btnAllStartCharge, btnAllPauseCharge, btnA
 // btnAddCar, btnRemoveCar,
 Car [] cars = new Car[N];
 Gif mmcAnimation;
+float totalChargeSpeed, totalReverseSpeed, totalBatteryRemain, totalBatteryCharge;
+String strTotalChargeSpeed, strTotalReverseSpeed, strTotalBatteryRemain, strTotalBatteryCharge;
 
 public void setup() {
   size(1100, 680);
@@ -267,14 +278,15 @@ class Car {
   int carType;
   int carColor, carColorCharge, carColorBattery;
   int textColor;
-  String carInfo;
-  float carChargeTime, carChargePrice, carBatteryTotal, carBatteryRemain;
+  float carChargeTime, carBatteryTotal, carBatteryRemain;
   float chargeSpeed1, chargeSpeed2, chargeSpeed3, chargeSpeed;
   float reverseSpeed1, reverseSpeed2, reverseSpeed3, reverseSpeed;
+  float chargePrice1, chargePrice2, chargePrice3, chargePrice, totalChargePrice;
   boolean pressed;
   Button btnStartCharge, btnPauseCharge, btnReverseCharge, btnExitCharge;
   PImage carImg;
   int chargeMode;
+  String strCarID, strCarType, strChargeMode, strBatteryRemain, strBatteryTotal, strTimeRemain, strChargePrice;
   
   Car(int tempXpos, int tempYpos, int tempCarType, float tempCarBatteryRemain) {
     xpos = tempXpos;
@@ -287,6 +299,11 @@ class Car {
     btnPauseCharge = new Button(970, 70, "\u6682\u505c\u5145\u7535");
     btnReverseCharge = new Button(860, 120, "\u53cd\u5411\u5145\u7535");
     btnExitCharge = new Button(970, 120, "\u53d6\u6d88\u5145\u7535");
+
+    totalChargePrice = 0;
+    chargePrice1 = 0.05f;
+    chargePrice2 = 0.04f;
+    chargePrice3 = 0.03f;
     
     chargeSpeed1 = 1.30f;
     chargeSpeed2 = 1.00f;
@@ -383,9 +400,9 @@ class Car {
   }
   
   public void showInfo() {
-    String strCarID = "\u60a8\u662f\u7b2c" + currentCarID + "\u53f7\u8f66";
-    String strCarType = "\u60a8\u7684\u8f66\u578b\u662fType" + carType;
-    String strChargeMode="";
+    strCarID = "\u60a8\u662f\u7b2c" + currentCarID + "\u53f7\u8f66";
+    strCarType = "\u60a8\u7684\u8f66\u578b\u662fType" + carType;
+    strChargeMode="";
     switch(chargeMode) {
       case 1:
         strChargeMode = "\u60a8\u7684\u6c7d\u8f66\u72b6\u6001\uff1a\u6b63\u5728\u5145\u7535";
@@ -400,14 +417,19 @@ class Car {
         strChargeMode = "\u60a8\u7684\u6c7d\u8f66\u72b6\u6001\uff1a\u9000\u51fa\u5145\u7535";
         break;
     }
-    String strBatteryRemain = "\u5269\u4f59\u7535\u91cf\uff1a" + carBatteryRemain; 
-    String strBatteryTotal = "\u603b\u5171\u7535\u91cf\uff1a" + carBatteryTotal;
+    strBatteryRemain = "\u5269\u4f59\u7535\u91cf\uff1a" + carBatteryRemain; 
+    strBatteryTotal = "\u603b\u5171\u7535\u91cf\uff1a" + carBatteryTotal;
+    strTimeRemain = "\u5269\u4f59\u65f6\u95f4\uff1a" + (carBatteryTotal-carBatteryRemain)/chargeSpeed/15 + " \u5206\u949f";
+    strChargePrice = "\u5145\u7535\u82b1\u8d39\uff1a" + totalChargePrice + " \u5143";
+
     fill(50);
     text(strCarID, 840, 330);
     text(strCarType, 840, 350);
     text(strChargeMode, 840,370);
     text(strBatteryRemain, 840, 390);
     text(strBatteryTotal, 840, 410);
+    text(strTimeRemain, 840, 430);
+    text(strChargePrice, 840, 450);
   }
   
   public void showDetail() {
@@ -447,24 +469,30 @@ class Car {
       case 1:  // start
         if (carBatteryRemain < carBatteryTotal/3) {
           chargeSpeed = chargeSpeed1;  // fast charge speed
+          chargePrice = chargePrice1;
         } else if (carBatteryRemain < 2*carBatteryTotal/3) {
           chargeSpeed = chargeSpeed2;  // middle charge speed
+          chargePrice = chargePrice2;
         } else if (carBatteryRemain < carBatteryTotal) {
           chargeSpeed = chargeSpeed3;
+          chargePrice = chargePrice3;
         } else {
           exitCharge();
         }
         reverseSpeed = 0;
         carBatteryRemain += chargeSpeed;
+        totalChargePrice += chargePrice;
         break;
       case 2:  // pause
+        chargeSpeed = 0;
+        reverseSpeed = 0;
         break;
       case 3:  // reverse
         if (carBatteryRemain > 2*carBatteryTotal/3) {
           reverseSpeed = reverseSpeed1;
         } else if (carBatteryRemain > carBatteryTotal/3) {
           reverseSpeed = reverseSpeed2;
-        } else if (carBatteryRemain > 10) {
+        } else if (carBatteryRemain > 5) {
           reverseSpeed = reverseSpeed3;
         } else {
           exitCharge();
@@ -473,6 +501,8 @@ class Car {
         carBatteryRemain -= reverseSpeed;
         break;
       case 0: // exit
+        chargeSpeed = 0;
+        reverseSpeed = 0;
         break;
       default:
         break;

@@ -5,14 +5,15 @@ class Car {
   int carType;
   color carColor, carColorCharge, carColorBattery;
   color textColor;
-  String carInfo;
-  float carChargeTime, carChargePrice, carBatteryTotal, carBatteryRemain;
+  float carChargeTime, carBatteryTotal, carBatteryRemain;
   float chargeSpeed1, chargeSpeed2, chargeSpeed3, chargeSpeed;
   float reverseSpeed1, reverseSpeed2, reverseSpeed3, reverseSpeed;
+  float chargePrice1, chargePrice2, chargePrice3, chargePrice, totalChargePrice;
   boolean pressed;
   Button btnStartCharge, btnPauseCharge, btnReverseCharge, btnExitCharge;
   PImage carImg;
   int chargeMode;
+  String strCarID, strCarType, strChargeMode, strBatteryRemain, strBatteryTotal, strTimeRemain, strChargePrice;
   
   Car(int tempXpos, int tempYpos, int tempCarType, float tempCarBatteryRemain) {
     xpos = tempXpos;
@@ -25,6 +26,11 @@ class Car {
     btnPauseCharge = new Button(970, 70, "暂停充电");
     btnReverseCharge = new Button(860, 120, "反向充电");
     btnExitCharge = new Button(970, 120, "取消充电");
+
+    totalChargePrice = 0;
+    chargePrice1 = 0.05;
+    chargePrice2 = 0.04;
+    chargePrice3 = 0.03;
     
     chargeSpeed1 = 1.30;
     chargeSpeed2 = 1.00;
@@ -121,9 +127,9 @@ class Car {
   }
   
   void showInfo() {
-    String strCarID = "您是第" + currentCarID + "号车";
-    String strCarType = "您的车型是Type" + carType;
-    String strChargeMode="";
+    strCarID = "您是第" + currentCarID + "号车";
+    strCarType = "您的车型是Type" + carType;
+    strChargeMode="";
     switch(chargeMode) {
       case 1:
         strChargeMode = "您的汽车状态：正在充电";
@@ -138,14 +144,19 @@ class Car {
         strChargeMode = "您的汽车状态：退出充电";
         break;
     }
-    String strBatteryRemain = "剩余电量：" + carBatteryRemain; 
-    String strBatteryTotal = "总共电量：" + carBatteryTotal;
+    strBatteryRemain = "剩余电量：" + carBatteryRemain; 
+    strBatteryTotal = "总共电量：" + carBatteryTotal;
+    strTimeRemain = "剩余时间：" + (carBatteryTotal-carBatteryRemain)/chargeSpeed/15 + " 分钟";
+    strChargePrice = "充电花费：" + totalChargePrice + " 元";
+
     fill(50);
     text(strCarID, 840, 330);
     text(strCarType, 840, 350);
     text(strChargeMode, 840,370);
     text(strBatteryRemain, 840, 390);
     text(strBatteryTotal, 840, 410);
+    text(strTimeRemain, 840, 430);
+    text(strChargePrice, 840, 450);
   }
   
   void showDetail() {
@@ -185,24 +196,30 @@ class Car {
       case 1:  // start
         if (carBatteryRemain < carBatteryTotal/3) {
           chargeSpeed = chargeSpeed1;  // fast charge speed
+          chargePrice = chargePrice1;
         } else if (carBatteryRemain < 2*carBatteryTotal/3) {
           chargeSpeed = chargeSpeed2;  // middle charge speed
+          chargePrice = chargePrice2;
         } else if (carBatteryRemain < carBatteryTotal) {
           chargeSpeed = chargeSpeed3;
+          chargePrice = chargePrice3;
         } else {
           exitCharge();
         }
         reverseSpeed = 0;
         carBatteryRemain += chargeSpeed;
+        totalChargePrice += chargePrice;
         break;
       case 2:  // pause
+        chargeSpeed = 0;
+        reverseSpeed = 0;
         break;
       case 3:  // reverse
         if (carBatteryRemain > 2*carBatteryTotal/3) {
           reverseSpeed = reverseSpeed1;
         } else if (carBatteryRemain > carBatteryTotal/3) {
           reverseSpeed = reverseSpeed2;
-        } else if (carBatteryRemain > 10) {
+        } else if (carBatteryRemain > 5) {
           reverseSpeed = reverseSpeed3;
         } else {
           exitCharge();
@@ -211,6 +228,8 @@ class Car {
         carBatteryRemain -= reverseSpeed;
         break;
       case 0: // exit
+        chargeSpeed = 0;
+        reverseSpeed = 0;
         break;
       default:
         break;
