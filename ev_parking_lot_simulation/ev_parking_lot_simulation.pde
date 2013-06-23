@@ -13,8 +13,11 @@ void displayMenu() {
   rect(20, 20, 800, 55);
   btnView.display();
   btnSimulate.display();
-  btnAllStartCharge.display();
-  btnAllReverseCharge.display();
+  btnWave.display();
+  btnAllStartChargeDC.display();
+  btnAllReverseChargeDC.display();
+  btnAllStartChargeAC.display();
+  btnAllReverseChargeAC.display();
   btnAllPauseCharge.display();
   btnExit.display();
 
@@ -108,26 +111,35 @@ void showAllDetail() {
 int N = 40;
 int currentCarID;
 int viewMode;
-Button btnView, btnSimulate, btnExit, btnAllStartCharge, btnAllPauseCharge, btnAllReverseCharge;
+Button btnView, btnSimulate, btnWave, btnExit;
+Button btnAllStartChargeDC, btnAllStartChargeAC, btnAllReverseChargeDC, btnAllReverseChargeAC, btnAllPauseCharge;
 // btnAddCar, btnRemoveCar,
 Car [] cars = new Car[N];
 Gif mmcAnimation;
 float totalChargeSpeed, totalReverseSpeed, totalBatteryRemain, totalBatteryCharge;
 String strTotalChargeSpeed, strTotalReverseSpeed, strTotalBatteryRemain, strTotalBatteryCharge;
+// define view mode
+final int ViewModeCar = 1;
+final int ViewModeSimulate = 2;
+final int ViewModeWave = 3;
+
 
 void setup() {
   size(1100, 680);
   background(255);
   PFont font = loadFont("SimHei-48.vlw");
-  btnView = new Button(50, 30, "停车场"); 
-  btnSimulate = new Button(150, 30, "开始模拟");
+  btnView = new Button(40, 30, "停车场"); 
+  btnSimulate = new Button(120, 30, "原理示意");
+  btnWave = new Button(200, 30, "波形分析");
   // TODO add or remove a car
   // btnAddCar = new Button(250, 30, "添加车辆");
   // btnRemoveCar = new Button(350, 30, "删除车辆");
-  btnAllStartCharge = new Button(250, 30, "全部充电");
-  btnAllPauseCharge = new Button(350, 30, "全部暂停");
-  btnAllReverseCharge = new Button(450, 30, "全部放电");
-  btnExit = new Button(550, 30, "退出程序");
+  btnAllStartChargeDC = new Button(280, 30, "DC充电");
+  btnAllReverseChargeDC = new Button(360, 30, "DC放电");
+  btnAllStartChargeAC = new Button(440, 30, "AC充电");
+  btnAllReverseChargeAC = new Button(520, 30, "AC放电");
+  btnAllPauseCharge = new Button(600, 30, "全部暂停");
+  btnExit = new Button(680, 30, "退出程序");
 
   mmcAnimation = new Gif(this, "MMC-animation.gif");
   mmcAnimation.loop();
@@ -159,10 +171,10 @@ void draw() {
   
   // view all cars and show car detail
   if (btnView.isPressed()) {
-    viewMode = 1;
+    viewMode = ViewModeCar;
   }
 
-  if (viewMode == 1) {
+  if (viewMode == ViewModeCar) {
     clearMain();
     displayCars();
     clearDetail();
@@ -170,33 +182,56 @@ void draw() {
     showAllDetail();
   }
 
-  if (btnAllStartCharge.isPressed()) {
+  // charge at the same speed, altogether a DC voltage
+  if (btnAllStartChargeDC.isPressed()) {
     for(int i = 0; i < N; i++) {
       cars[i].startCharge();
     }
   }
 
+  // reverse charge at the same speed, altogether a DC voltage
+  if (btnAllReverseChargeDC.isPressed()) {
+    for(int i = 0; i < N; i++) {
+      cars[i].reverseCharge();
+    }
+  }
+
+  // different time different cars are charging, altogether a AC wave, mmc
+  if (btnAllStartChargeAC.isPressed()) {
+
+
+  }
+
+  // different time different cars are reverse charging, altogether a AC wave, mmc
+  if (btnAllReverseChargeAC.isPressed()) {
+
+  }
+
+  // pause all charging cars 
   if (btnAllPauseCharge.isPressed()) {
     for(int i = 0; i < N; i++) {
       cars[i].pauseCharge();
     }
   }
 
-  if (btnAllReverseCharge.isPressed()) {
-    for(int i = 0; i < N; i++) {
-      cars[i].reverseCharge();
-    }
-  }
-
 
   // simulate mmc, gif from wiki
   if (btnSimulate.isPressed()) {
-    viewMode = 2;
+    viewMode = ViewModeSimulate;
     clearMain();
     clearDetail();
     image(mmcAnimation, 50, 100);
   }
   
+  if (btnWave.isPressed()) {
+    viewMode = ViewModeWave;
+  }
+
+  if (viewMode == ViewModeWave) {
+    //TODO
+    clearMain();
+    clearDetail();
+  }
 
 
   // exit button

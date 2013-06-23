@@ -31,8 +31,11 @@ public void displayMenu() {
   rect(20, 20, 800, 55);
   btnView.display();
   btnSimulate.display();
-  btnAllStartCharge.display();
-  btnAllReverseCharge.display();
+  btnWave.display();
+  btnAllStartChargeDC.display();
+  btnAllReverseChargeDC.display();
+  btnAllStartChargeAC.display();
+  btnAllReverseChargeAC.display();
   btnAllPauseCharge.display();
   btnExit.display();
 
@@ -126,26 +129,35 @@ public void showAllDetail() {
 int N = 40;
 int currentCarID;
 int viewMode;
-Button btnView, btnSimulate, btnExit, btnAllStartCharge, btnAllPauseCharge, btnAllReverseCharge;
+Button btnView, btnSimulate, btnWave, btnExit;
+Button btnAllStartChargeDC, btnAllStartChargeAC, btnAllReverseChargeDC, btnAllReverseChargeAC, btnAllPauseCharge;
 // btnAddCar, btnRemoveCar,
 Car [] cars = new Car[N];
 Gif mmcAnimation;
 float totalChargeSpeed, totalReverseSpeed, totalBatteryRemain, totalBatteryCharge;
 String strTotalChargeSpeed, strTotalReverseSpeed, strTotalBatteryRemain, strTotalBatteryCharge;
+// define view mode
+final int ViewModeCar = 1;
+final int ViewModeSimulate = 2;
+final int ViewModeWave = 3;
+
 
 public void setup() {
   size(1100, 680);
   background(255);
   PFont font = loadFont("SimHei-48.vlw");
-  btnView = new Button(50, 30, "\u505c\u8f66\u573a"); 
-  btnSimulate = new Button(150, 30, "\u5f00\u59cb\u6a21\u62df");
+  btnView = new Button(40, 30, "\u505c\u8f66\u573a"); 
+  btnSimulate = new Button(120, 30, "\u539f\u7406\u793a\u610f");
+  btnWave = new Button(200, 30, "\u6ce2\u5f62\u5206\u6790");
   // TODO add or remove a car
   // btnAddCar = new Button(250, 30, "\u6dfb\u52a0\u8f66\u8f86");
   // btnRemoveCar = new Button(350, 30, "\u5220\u9664\u8f66\u8f86");
-  btnAllStartCharge = new Button(250, 30, "\u5168\u90e8\u5145\u7535");
-  btnAllPauseCharge = new Button(350, 30, "\u5168\u90e8\u6682\u505c");
-  btnAllReverseCharge = new Button(450, 30, "\u5168\u90e8\u653e\u7535");
-  btnExit = new Button(550, 30, "\u9000\u51fa\u7a0b\u5e8f");
+  btnAllStartChargeDC = new Button(280, 30, "DC\u5145\u7535");
+  btnAllReverseChargeDC = new Button(360, 30, "DC\u653e\u7535");
+  btnAllStartChargeAC = new Button(440, 30, "AC\u5145\u7535");
+  btnAllReverseChargeAC = new Button(520, 30, "AC\u653e\u7535");
+  btnAllPauseCharge = new Button(600, 30, "\u5168\u90e8\u6682\u505c");
+  btnExit = new Button(680, 30, "\u9000\u51fa\u7a0b\u5e8f");
 
   mmcAnimation = new Gif(this, "MMC-animation.gif");
   mmcAnimation.loop();
@@ -177,10 +189,10 @@ public void draw() {
   
   // view all cars and show car detail
   if (btnView.isPressed()) {
-    viewMode = 1;
+    viewMode = ViewModeCar;
   }
 
-  if (viewMode == 1) {
+  if (viewMode == ViewModeCar) {
     clearMain();
     displayCars();
     clearDetail();
@@ -188,33 +200,56 @@ public void draw() {
     showAllDetail();
   }
 
-  if (btnAllStartCharge.isPressed()) {
+  // charge at the same speed, altogether a DC voltage
+  if (btnAllStartChargeDC.isPressed()) {
     for(int i = 0; i < N; i++) {
       cars[i].startCharge();
     }
   }
 
+  // reverse charge at the same speed, altogether a DC voltage
+  if (btnAllReverseChargeDC.isPressed()) {
+    for(int i = 0; i < N; i++) {
+      cars[i].reverseCharge();
+    }
+  }
+
+  // different time different cars are charging, altogether a AC wave, mmc
+  if (btnAllStartChargeAC.isPressed()) {
+
+
+  }
+
+  // different time different cars are reverse charging, altogether a AC wave, mmc
+  if (btnAllReverseChargeAC.isPressed()) {
+
+  }
+
+  // pause all charging cars 
   if (btnAllPauseCharge.isPressed()) {
     for(int i = 0; i < N; i++) {
       cars[i].pauseCharge();
     }
   }
 
-  if (btnAllReverseCharge.isPressed()) {
-    for(int i = 0; i < N; i++) {
-      cars[i].reverseCharge();
-    }
-  }
-
 
   // simulate mmc, gif from wiki
   if (btnSimulate.isPressed()) {
-    viewMode = 2;
+    viewMode = ViewModeSimulate;
     clearMain();
     clearDetail();
     image(mmcAnimation, 50, 100);
   }
   
+  if (btnWave.isPressed()) {
+    viewMode = ViewModeWave;
+  }
+
+  if (viewMode == ViewModeWave) {
+    //TODO
+    clearMain();
+    clearDetail();
+  }
 
 
   // exit button
