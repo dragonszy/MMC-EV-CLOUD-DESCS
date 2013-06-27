@@ -124,6 +124,37 @@ public void showAllDetail() {
 
 }
 
+// get the index of sorted cars by battery remain
+public float[] getArrayOfBatteryRemain() {
+  float[] arrayBatteryRemain = new float[N];
+  for (int i = 0; i<N; i++) {
+    arrayBatteryRemain[i] = cars[i].carBatteryRemain;
+  }
+  return arrayBatteryRemain;
+}
+
+public int[] getIndexOfBatteryRemain() {
+  float[] arrayBatteryRemainOrigin = getArrayOfBatteryRemain();
+  float[] arrayBatteryRemainSort = sort(arrayBatteryRemainOrigin);
+  
+  int[] index = new int[N];
+  for (int i = 0; i<N; i++) { // sort
+    for(int j=0; j<N; j++) { //origin
+      if (arrayBatteryRemainSort[i] == arrayBatteryRemainOrigin[j]) {
+        index[i] = j;
+        break;
+      }
+    }
+  }
+  return index;
+}
+
+// pause all cars charging
+public void pauseAllCarsCharge() {
+  for(int i = 0; i < N; i++) {
+    cars[i].pauseCharge();
+  }
+}
 
 // ================ Main Program ================
 int N = 40;
@@ -215,10 +246,117 @@ public void draw() {
   }
 
   // different time different cars are charging, altogether a AC wave, mmc
+  // a car 300V  40 car 12kv 
+  
   if (btnAllStartChargeAC.isPressed()) {
+    int time = 0;
+    int T = 30;
+    int[] batteryIndex = new int[N];
 
+/* test of batteryIndex *
+    batteryIndex = getIndexOfBatteryRemain();
+    for (int i=0;i<N;i++) {
+      println("No"+i+" is: "+batteryIndex[i]);
+    }
+*/
 
+/* reductant code *
+    for (time=0; time < T/10; time++) {
+      // all cars pause charge
+      pauseAllCarsCharge();
+      // sort and find the min 0.3 * N => sin(90/5)
+      batteryIndex = getIndexOfBatteryRemain();
+      for(int i=0; i<0.3*N; i++) {
+        cars[batteryIndex[i]].startCharge();
+      }
+    }
+    for (time=T/10; time < T/10*2; time++) {
+      pauseAllCarsCharge();
+      // sort and find the min 0.6 * N => sin(90/5*2)
+      batteryIndex = getIndexOfBatteryRemain();
+      for(int i=0; i<0.6*N; i++) {
+        cars[batteryIndex[i]].startCharge();
+      }
+    }
+    for (time=T/10*2; time < T/10*3; time++) {
+      pauseAllCarsCharge();
+      // sort and find the min 0.8 * N => sin(90/5*3)
+      batteryIndex = getIndexOfBatteryRemain();
+      for(int i=0; i<0.8*N; i++) {
+        cars[batteryIndex[i]].startCharge();
+      }
+    }
+    for (time=T/10*3; time < T/10*4; time++) {
+      pauseAllCarsCharge();
+      // sort and find the min 0.95 * N => sin(90/5*4)
+      batteryIndex = getIndexOfBatteryRemain();
+      for(int i=0; i<0.95*N; i++) {
+        cars[batteryIndex[i]].startCharge();
+      }
+    }
+    for (time=T/10*4; time < T/2; time++) {
+      pauseAllCarsCharge();
+      // sort and find the min 1.0 * N => sin(90)
+      for(int i=0; i<N; i++) {
+        cars[batteryIndex[i]].startCharge();
+      }
+    }
+*/
+
+    for (time = 0; time < T/2; time++) {
+      pauseAllCarsCharge();
+      batteryIndex = getIndexOfBatteryRemain();
+      if (time < T/10) {
+        for(int i=0; i<0.3f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/10 * 2) {
+        for(int i=0; i<0.6f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/10*3) {
+        for(int i=0; i<0.8f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/10*4) {
+        for(int i=0; i<0.95f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/2) {
+        for(int i=0; i<N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      }
+    }
+  
+    for (time = T/2; time < T; time++) {
+      pauseAllCarsCharge();
+      batteryIndex = getIndexOfBatteryRemain();
+      if (time < T/10*6) {
+        for(int i=0; i<N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/10*7) {
+        for(int i=0; i<0.95f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/10*8) {
+        for(int i=0; i<0.8f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T/10*9) {
+        for(int i=0; i<0.6f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      } else if (time < T) {
+        for(int i=0; i<0.3f*N; i++) {
+          cars[batteryIndex[i]].startCharge();
+        }
+      }
+    }
+  
   }
+  
 
   // different time different cars are reverse charging, altogether a AC wave, mmc
   if (btnAllReverseChargeAC.isPressed()) {
@@ -227,9 +365,7 @@ public void draw() {
 
   // pause all charging cars 
   if (btnAllPauseCharge.isPressed()) {
-    for(int i = 0; i < N; i++) {
-      cars[i].pauseCharge();
-    }
+    pauseAllCarsCharge();
   }
 
 
