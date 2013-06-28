@@ -1,74 +1,99 @@
 // ======== Main Program ==========
-Button btnSetCharge, btnStartCharge, btnExitCharge;
+Button btnSetCharge, btnStartCharge, btnExitCharge, btnMenu, btnPauseCharge;
+
+int viewMode;
+boolean isCharge;
+
+final int ViewModeMenu = 0;
+final int ViewModeSet = 1;
+final int ViewModeCharge = 2;
+
+
+int currentCarID = int(random(40));
+
+Car currentCar;
 
 void setup() {
-  size(400, 600);
-  background(127);
-  btnSetCharge = new Button(width/2, 50, "Set Charge");
-  btnStartCharge = new Button(width/2, 150, "Start Charge");
-  btnExitCharge = new Button(width/2, 250, "ExitCharge");
+
+  orientation(PORTRAIT);
+  background(255);
+  PFont myFont = createFont("SimHei", 35);
+  textFont(myFont);
+
+  currentCar = new Car(width/2-100, 400, currentCarID%7, random(1000, 4000));
+  viewMode = ViewModeMenu;
+  isCharge = false;
+  btnSetCharge = new Button(width/2+80, 700, "充电设置");
+  btnStartCharge = new Button(width/2+80, 800, "开始充电");
+  btnPauseCharge = new Button(width/2+80, 900, "暂停充电");
+  btnExitCharge = new Button(width/2+80, 1000, "退出充电");
+  // btnMenu = new Button(width/2, 400, "返回菜单");
 }
 
 void draw() {
+  clearAll();
+  // set charge button text
+  if (btnStartCharge.isPressed()) {
+    isCharge = true;
+  }
+  if (btnPauseCharge.isPressed()) {
+    isCharge = false;
+  }
+
+
+  currentCar.showInfo();
+  displayMenu();
+  currentCar.display();
+  // display Menu Buttons
+  /*
+  if (viewMode == ViewModeMenu) {
+    currentCar.showInfo();
+	  displayMenu();
+  }
+  // display Charge 
+  if (viewMode == ViewModeCharge) {
+    currentCar.showInfo();
+    displayMenu();
+    currentCar.display();
+  }
+  */
+  // setting view mode
+	if (btnSetCharge.isPressed()) {
+
+	}
+  // charge view mode
+	
+
+  if (isCharge == true) {
+    currentCar.updateBattery();
+  }
+
+	if (btnExitCharge.isPressed()) {
+	  exit();
+  }
+}
+
+
+// ========= Main functions ============
+void displayMenu() {
+  
   btnSetCharge.display();
   btnStartCharge.display();
+  btnPauseCharge.display();
   btnExitCharge.display();
 }
 
-
-// ======== Button Class ===========
-class Button {
-  int xpos, ypos;
-  int w, h;
-  color buttonColor, buttonColorIn, buttonColorOut;
-  color textColor;
-  String t;
-  boolean pressed;
-  
-  Button (int tempXpos, int tempYpos, String tempText) {
-    xpos = tempXpos;
-    ypos = tempYpos;
-    w = 90;
-    h = 35;
-    buttonColorOut = color(200, 200, 200);
-    buttonColorIn = color(230, 230, 230);
-    buttonColor = buttonColorOut;
-    textColor = color(50, 50, 50);
-    t = tempText;
-    pressed = false;
-  }
-  
-  void display() {
-    fill(buttonColor);
-    rectMode(CENTER);
-    rect(xpos, ypos, w, h);
-    fill(textColor);
-    textAlign(CENTER);
-    text(t, xpos, ypos+0.3*h);
-  }
-  
-  boolean isOver() {
-    if (mouseX >= xpos && mouseX <= xpos+w && mouseY >= ypos && mouseY <= ypos+h) {
-      buttonColor = buttonColorIn;
-      return true;
-    } else {
-      buttonColor = buttonColorOut;
-      return false;   
-    }
-  }
-  
-  boolean isPressed() {
-    if (isOver() && mousePressed) {
-      pressed = !pressed;
-      return true;
-    } else {
-      return false;
-    }
-  }
+void displayCharge() {
+  currentCar.display();
+   
 }
 
 
+void clearAll() {
+  fill(255);
+  rect(0,0,width,height);
+}
 
+void displayCarDetail() {
 
-
-
+}
