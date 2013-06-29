@@ -141,7 +141,7 @@ void pauseAllCarsCharge() {
 // ================ Main Program ================
 int N = 40;
 int currentCarID;
-int viewMode;
+int viewMode, chargeMode;
 Button btnView, btnSimulate, btnWave, btnExit;
 Button btnAllStartChargeDC, btnAllStartChargeAC, btnAllReverseChargeDC, btnAllReverseChargeAC, btnAllPauseCharge;
 // btnAddCar, btnRemoveCar,
@@ -154,6 +154,13 @@ final int ViewModeCar = 1;
 final int ViewModeSimulate = 2;
 final int ViewModeWave = 3;
 
+final int ChargeModeNone = 00;
+final int ChargeModeDC = 11;
+final int ReverseChargeDC = 12;
+final int ChargeModeAC = 21;
+final int ReverseChargeAC = 22;
+
+int loop = 0;
 
 void setup() {
   size(1100, 680);
@@ -215,6 +222,7 @@ void draw() {
 
   // charge at the same speed, altogether a DC voltage
   if (btnAllStartChargeDC.isPressed()) {
+    chargeMode = ChargeModeDC;
     for(int i = 0; i < N; i++) {
       cars[i].startCharge();
     }
@@ -230,11 +238,9 @@ void draw() {
   // different time different cars are charging, altogether a AC wave, mmc
   // a car 300V  40 car 12kv 
   
-  if (btnAllStartChargeAC.isPressed()) {
-    int time = 0;
-    int T = 30;
-    int[] batteryIndex = new int[N];
-
+  if (btnAllStartChargeAC.isPressed()) {   
+    chargeMode = ChargeModeAC;
+  }
 /* test of batteryIndex *
     batteryIndex = getIndexOfBatteryRemain();
     for (int i=0;i<N;i++) {
@@ -284,9 +290,17 @@ void draw() {
       }
     }
 */
-
-    for (time = 0; time < T/2; time++) {
-      pauseAllCarsCharge();
+    //while (chargeMode == ChargeModeAC) {
+    
+  
+  
+  if (chargeMode == ChargeModeAC) {
+    int time = 0;
+    int T = 400;
+    int[] batteryIndex = new int[N];
+    
+    for (time = 0; time < T/2; time++) {    
+      pauseAllCarsCharge();    
       batteryIndex = getIndexOfBatteryRemain();
       if (time < T/10) {
         for(int i=0; i<0.3*N; i++) {
@@ -336,17 +350,18 @@ void draw() {
         }
       }
     }
-  
   }
   
 
   // different time different cars are reverse charging, altogether a AC wave, mmc
   if (btnAllReverseChargeAC.isPressed()) {
-
+    chargeMode = ReverseChargeAC;
   }
 
   // pause all charging cars 
   if (btnAllPauseCharge.isPressed()) {
+    viewMode = ViewModeCar;
+    chargeMode = ChargeModeNone;
     pauseAllCarsCharge();
   }
 
